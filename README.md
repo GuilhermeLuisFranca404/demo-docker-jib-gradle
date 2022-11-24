@@ -10,6 +10,10 @@ $ gradle build
 ```
 $ gradle assemble
 ```
+### Generated image Docker
+```
+docker build .
+```
 ### Run image Docker
 ```
 docker run --rm -p 8080:8080 -t demoapp-example-jib:latest
