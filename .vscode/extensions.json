@@ -1,0 +1,8 @@
+{
+    "recommendations": [
+        "vscjava.vscode-java-pack",
+        "pivotal.vscode-boot-dev-pack",
+        "richardwillis.vscode-gradle-extension-pack",
+        "ms-azuretools.vscode-docker"
+    ]
+}

@@ -1,0 +1,73 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '2.7.5'
+	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+	id 'pl.allegro.tech.build.axion-release' version '1.13.6'
+    id 'com.palantir.docker' version '0.31.0'
+    id 'com.palantir.docker-run' version '0.31.0'
+	id 'com.google.cloud.tools.jib' version '3.3.1'
+}
+
+version = scmVersion.version
+
+group = 'com.testantoVM'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	maven { url 'https://repo.spring.io/release' }
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+
+
+String imageName = "exampleorg/exampleapplication:$version"
+
+docker {
+    name imageName
+    files "build/libs/${bootJar.archiveFileName.get()}"
+    buildArgs([JAR_FILE: bootJar.archiveFileName.get()])
+}
+
+dockerRun {
+    name project.name
+    image imageName
+    ports '8080:8080'
+    clean true
+}
+
+jib {
+	from {
+		image = 'azul/zulu-openjdk:17-jre'
+	}
+	to {
+		image = imageName
+		/* - example to deploy CI/CD
+		image = '651684684.drk.ecr.eu-west-1.amazonaes.com/demoapp-example-jib'
+		auth {
+			username: property('user')
+			password: property('pass')
+		}*/
+	}
+}
+
